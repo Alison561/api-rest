@@ -7,8 +7,16 @@ exports.select = async (req, res) =>{
     res.json(sle)
 }
 
+
+exports.findOne = async (req, res) =>{
+    var sle = await user.findOne(req.params.id)
+    res.status(200)
+    res.json(sle)
+}
+
+
 exports.insert = (req, res) =>{
-    if (req.body.nome == undefined || req.body.sobnome == undefined) {
+    if (req.body.nome == '' || req.body.sobnome == '') {
         res.sendStatus(401)
     } else {
         user.creat(req.body.nome, req.body.sobnome)

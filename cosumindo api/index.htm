@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cosumindo Api</title>
+</head>
+<body>
+    <h1>consumindo api</h1>
+    <br>
+    <br>
+    <h2>listando api</h2>
+    <ul id="ul"> </ul>
+
+    <h2>cadastrando na api</h2>
+    <form id="enviar" method="POST">
+        <input type="text" name="nome" id="nome">
+        <input type="text" name="sobnome" id="sobnome">
+        <input type="submit" value="enviar" >
+    </form>
+
+
+    <h2>atualizando na api</h2>
+    <form id="atualizar" method="POST">
+        <input type="hidden" name="id" id="id">
+        <input type="text" name="nome" id="Anome">
+        <input type="text" name="sobnome" id="Asobnome">
+        <input type="submit" value="atualizar" >
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+        var ul = document.getElementById("ul")
+
+        function deleteId(item){
+            axios.delete('http://localhost:3000/user/'+item.id)
+            .then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+
+        function atuzlizar(item){
+            axios.get('http://localhost:3000/user/'+item.id,{
+                
+            })
+            .then(function (response) {
+                document.getElementById("id").value  = response.data.id
+                document.getElementById("Anome").value = response.data.nome
+                document.getElementById("Asobnome").value = response.data.sobrenome
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        axios.get('http://localhost:3000/user').then(function (resp) {
+            let nome = resp.data;
+
+
+            nome.forEach(value => {
+                let li = document.createElement('li');
+                li.innerHTML = `${value.id} - ${value.nome} - ${value.sobrenome}`;
+                
+                
+                let btn = document.createElement('button')
+                let btn1 = document.createElement('button')
+                
+                
+                btn.innerHTML = 'delete'
+                btn1.innerHTML = 'atualizar'
+
+
+                li.setAttribute('id', value.id)
+                btn.addEventListener("click", ()=>{
+                    deleteId(li)
+                })
+
+                btn1.addEventListener("click", ()=>{
+                    atuzlizar(li)
+                })
+               
+               
+                ul.appendChild(li)
+                ul.appendChild(btn)
+                ul.appendChild(btn1)
+            });
+        }).catch(function (error) {
+            console.log(error);
+        })
+
+
+        var atu = document.getElementById('atualizar')
+        atu.addEventListener("submit", (e) =>{
+            e.preventDefault()
+            axios.put('http://localhost:3000/user/'+document.getElementById("id").value, {
+                nome: document.getElementById("Anome").value,
+                sobnome: document.getElementById("Asobnome").value
+            })
+            .then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        })
+
+
+        var sub = document.getElementById('enviar')
+        sub.addEventListener("submit", (e) =>{
+            axios.post('http://localhost:3000/user', {
+                nome: document.getElementById("nome").value,
+                sobnome: document.getElementById("sobnome").value
+            })
+            .then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        })
+    </script>
+</body>
+</html>
